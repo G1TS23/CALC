@@ -25,6 +25,7 @@ export default {
   align-items: center;
   justify-content: center;
   background-color: black;
+  transition: all .35s ease-in-out;
 }
 
 .light{

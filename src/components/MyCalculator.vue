@@ -33,30 +33,30 @@
               
               <div class="round light inverse" @click="inverse()"><i class="fa-solid fa-plus-minus"></i></div>
               <div class="round light percent" @click="percent()"><i class="fa-solid fa-percent"></i></div>
-              <div class="round orange divided" @click="divide()"><i class="fa-solid fa-divide"></i></div>
+              <div class="round turquoise divided" @click="divide()"><i class="fa-solid fa-divide"></i></div>
           </div>
           <div class="second row">
               <div class="round dark seven" @click="concat('7')">7</div>
               <div class="round dark height" @click="concat('8')">8</div>
               <div class="round dark nine" @click="concat('9')">9</div>
-              <div class="round orange multiply" @click="multiply()"><i class="fa-solid fa-xmark"></i></div>
+              <div class="round turquoise multiply" @click="multiply()"><i class="fa-solid fa-xmark"></i></div>
           </div>
           <div class="third row">
               <div class="round dark four" @click="concat('4')">4</div>
               <div class="round dark five" @click="concat('5')">5</div>
               <div class="round dark six" @click="concat('6')">6</div>
-              <div class="round orange minus" @click="minus()"><i class="fa-solid fa-minus"></i></div>
+              <div class="round turquoise minus" @click="minus()"><i class="fa-solid fa-minus"></i></div>
           </div>
           <div class="fourth row">
               <div class="round dark one" @click="concat('1')">1</div>
               <div class="round dark two" @click="concat('2')">2</div>
               <div class="round dark three" @click="concat('3')">3</div>
-              <div class="round orange plus" @click="plus()"> <i class="fa-solid fa-plus"></i></div>
+              <div class="round turquoise plus" @click="plus()"> <i class="fa-solid fa-plus"></i></div>
           </div>
           <div class="fifth row">
               <div class="round dark zero" @click="concat('0')">0</div>
               <div class="round dark coma" @click="concat('.')">.</div>
-              <div class="round orange equal" @click="equals()"><i class="fa-solid fa-equals"></i></div>
+              <div class="round turquoise equal" @click="equals()"><i class="fa-solid fa-equals"></i></div>
           </div>
       </div>
     </div>
@@ -98,8 +98,7 @@
         reset: true,
         isCalculate: false,
         darkMode: true,
-        decimal: false,
-        equal: false
+        decimal: false
       }
     },created(){
       window.addEventListener('keydown', this.keyPress);
@@ -290,10 +289,7 @@
       },
       minus(){
 
-        if (this.reset){
-          this.output = "-";
-          this.reset = false;
-        } else if (!this.equal){
+        if (this.output === "0"){
           this.output = "-";
           this.reset = false;
         } else {
@@ -335,6 +331,7 @@
         this.isMultiply = true;
         this.isDivide = false;
         this.decimal = false;
+
       
       },
       divide(){
@@ -355,6 +352,7 @@
         this.isMultiply = false;
         this.isDivide = true;
         this.decimal = false;
+
   
       },percent(){
         this.concat("%");
@@ -369,13 +367,12 @@
       equals(){
         this.history.push(parseFloat(this.output));
         this.calculate();
-        this.reset = false;
+        this.reset = true;
         this.isPlus = false;
         this.isMinus = false;
         this.isMultiply = false;
         this.isDivide = false;
         this.decimal = false;
-        this.equal = true;
       },
       inverse(){
         if(!this.toggle && this.output !== "0"){
@@ -441,7 +438,7 @@
   }
 
   .close{
-    color: orange;
+    color: turquoise;
     cursor: pointer;
     z-index: 100;
     font-size: 2rem;
@@ -452,7 +449,7 @@
     position: absolute;
     top: 15px;
     left: 20px;
-    color: orange;
+    color: turquoise;
     cursor: pointer;
     z-index: 100;
     font-size: 2rem;
@@ -515,6 +512,8 @@
     font-weight: 300;
     font-size: 4rem;
     color: var(--outputColor);
+    overflow-x: scroll;
+    white-space: nowrap;
   }
   
   .history{
@@ -569,16 +568,18 @@
   }
   
   .dark{
-    background-color: rgb(47, 79, 79);
+    background-color: rgb(77, 77, 77);
     &:active{
-        background-color: rgb(77, 109, 109);
+        background-color: rgb(107, 107, 107);
     }
   }
   
-  .orange{
-    background-color: rgb(255, 165, 0);
+  .turquoise{
+
+    color: black;
+    background-color: rgb(64, 224, 208);
     &:active{
-        background-color: rgb(255, 195, 30);
+        background-color: rgb(94, 254, 238);
     }
   }
 
