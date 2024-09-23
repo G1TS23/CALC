@@ -63,6 +63,7 @@
     </div>
   </div>
 
+<!-- Just for test purpose
     <div class="control">
       <p>Decimal : {{ decimal }}</p>
       <p>Output : {{ output }}</p>
@@ -77,7 +78,7 @@
       <p>Is Divide : {{ isDivide }}</p>
       <p>Reset : {{ reset }}</p>
       <p>Is Calculate : {{ isCalculate }}</p>
-    </div>
+    </div> -->
   
   </template>
   
