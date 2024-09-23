@@ -1,7 +1,7 @@
 <template>
   <div class="global">
     
-    <div class="menu" :class="visibilityMenu">
+    <div class="menu" :class="{'hidden' : !toggle}">
       <div class="close" @click="toggleMenu()">
         <i class="fa-solid fa-xmark"></i>
       </div>
@@ -15,51 +15,50 @@
       </div>
     </div>
     
-    <div class="calculator" :class="{ 'show' : toggle, 'dark-mode' : darkMode, 'light-mode' : !darkMode }">
-      <div class="toggle" @click="toggleMenu()" :class="iconCalc">
-      <i class="fa-solid fa-calculator"></i>
-    </div>
+    <div class="calculator" @click="toggleMenuCalc()" :class="{ 'show' : toggle, 'dark-mode' : darkMode, 'light-mode' : !darkMode }">
+      <div class="toggle" @click.stop="toggleMenu()" :class="{'iconCalc' : toggle}">
+        <i class="fa-solid fa-calculator"></i>
+      </div>
        
-        <div class="screen">
-          <div class="history">{{ history[history.length - 4] }}</div>
-          <div class="history">{{ history[history.length - 3] }}</div>
-          <div class="history">{{ history[history.length - 2] }}</div>
-          <div class="history">{{ history[history.length - 1] }}</div>
-          <div class="active">{{ output }}</div>
-  
-        </div>
-        <div class="keyboard">
-            <div class="first row">
-                <div class="round light cancel" @click="supr()"><span v-show="output === '0'">AC</span><i v-show="output !== '0'"  class="fa-solid fa-delete-left"></i></div>
-                
-                <div class="round light inverse" @click="inverse()"><i class="fa-solid fa-plus-minus"></i></div>
-                <div class="round light percent" @click="percent()"><i class="fa-solid fa-percent"></i></div>
-                <div class="round orange divided" @click="divide()"><i class="fa-solid fa-divide"></i></div>
-            </div>
-            <div class="second row">
-                <div class="round dark seven" @click="concat('7')">7</div>
-                <div class="round dark height" @click="concat('8')">8</div>
-                <div class="round dark nine" @click="concat('9')">9</div>
-                <div class="round orange multiply" @click="multiply()"><i class="fa-solid fa-xmark"></i></div>
-            </div>
-            <div class="third row">
-                <div class="round dark four" @click="concat('4')">4</div>
-                <div class="round dark five" @click="concat('5')">5</div>
-                <div class="round dark six" @click="concat('6')">6</div>
-                <div class="round orange minus" @click="minus()"><i class="fa-solid fa-minus"></i></div>
-            </div>
-            <div class="fourth row">
-                <div class="round dark one" @click="concat('1')">1</div>
-                <div class="round dark two" @click="concat('2')">2</div>
-                <div class="round dark three" @click="concat('3')">3</div>
-                <div class="round orange plus" @click="plus()"> <i class="fa-solid fa-plus"></i></div>
-            </div>
-            <div class="fifth row">
-                <div class="round dark zero" @click="concat('0')">0</div>
-                <div class="round dark coma" @click="concat('.')">.</div>
-                <div class="round orange equal" @click="equals()"><i class="fa-solid fa-equals"></i></div>
-            </div>
-        </div>
+      <div class="screen">
+        <div class="history">{{ history[history.length - 4] }}</div>
+        <div class="history">{{ history[history.length - 3] }}</div>
+        <div class="history">{{ history[history.length - 2] }}</div>
+        <div class="history">{{ history[history.length - 1] }}</div>
+        <div class="active">{{ output }}</div>
+      </div>
+      <div class="keyboard">
+          <div class="first row">
+              <div class="round light cancel" @click="supr()"><span v-show="output === '0'">AC</span><i v-show="output !== '0'"  class="fa-solid fa-delete-left"></i></div>
+              
+              <div class="round light inverse" @click="inverse()"><i class="fa-solid fa-plus-minus"></i></div>
+              <div class="round light percent" @click="percent()"><i class="fa-solid fa-percent"></i></div>
+              <div class="round orange divided" @click="divide()"><i class="fa-solid fa-divide"></i></div>
+          </div>
+          <div class="second row">
+              <div class="round dark seven" @click="concat('7')">7</div>
+              <div class="round dark height" @click="concat('8')">8</div>
+              <div class="round dark nine" @click="concat('9')">9</div>
+              <div class="round orange multiply" @click="multiply()"><i class="fa-solid fa-xmark"></i></div>
+          </div>
+          <div class="third row">
+              <div class="round dark four" @click="concat('4')">4</div>
+              <div class="round dark five" @click="concat('5')">5</div>
+              <div class="round dark six" @click="concat('6')">6</div>
+              <div class="round orange minus" @click="minus()"><i class="fa-solid fa-minus"></i></div>
+          </div>
+          <div class="fourth row">
+              <div class="round dark one" @click="concat('1')">1</div>
+              <div class="round dark two" @click="concat('2')">2</div>
+              <div class="round dark three" @click="concat('3')">3</div>
+              <div class="round orange plus" @click="plus()"> <i class="fa-solid fa-plus"></i></div>
+          </div>
+          <div class="fifth row">
+              <div class="round dark zero" @click="concat('0')">0</div>
+              <div class="round dark coma" @click="concat('.')">.</div>
+              <div class="round orange equal" @click="equals()"><i class="fa-solid fa-equals"></i></div>
+          </div>
+      </div>
     </div>
   </div>
 
@@ -90,14 +89,12 @@
         output: "0",
         history: [],
         toggle: false,
-        visibilityMenu: "hidden",
-        visibilityCalc: "",
-        iconCalc: "",
         temp: 0.0,
         isPlus: false,
         isMinus: false,
         isMultiply: false,
         isDivide: false,
+        isPercent: false,
         reset: true,
         isCalculate: false,
         darkMode: true,
@@ -185,6 +182,19 @@
       }
       },
       calculate(){
+
+        if(this.isPercent){
+
+          const trueOutput = this.output.slice(0, this.output - 1);
+
+
+
+          const result = this.temp / 100;
+          this.countDecimals(result) > 5 ? 
+            this.output = result.toFixed(5).toString() : 
+            this.output = result.toString();
+        }
+
         if (this.isPlus && !this.isDivide && !this.isMinus && !this.isMultiply) {
           this.history[this.history.length - 1] = "+" + this.history[this.history.length - 1];
 
@@ -348,6 +358,13 @@
   
       },percent(){
         this.concat("%");
+
+        this.temp = parseFloat(this.output.slice(0, this.output.length - 1));
+        this.history.push(this.temp);
+        
+        this.calculate();
+        this.isPercent = true;
+
       },
       equals(){
         this.history.push(parseFloat(this.output));
@@ -368,10 +385,17 @@
         }
       },
       toggleMenu(){
-        this.toggle ? this.visibilityMenu = "hidden" : this.visibilityMenu = "";
-        this.toggle ? this.visibilityCalc = "" : this.visibilityCalc = "show";
-        this.toggle ? this.iconCalc = "" : this.iconCalc = "iconCalc";
+        console.log("toggleMenu");
         this.toggle = !this.toggle;
+        
+        
+      },
+      toggleMenuCalc(){
+        console.log("toggleMenuCalc");
+
+        if(this.toggle){
+          this.toggle = false;
+        }
       },
       toggleDarkMode(){
         this.darkMode = !this.darkMode;
@@ -433,6 +457,7 @@
     z-index: 100;
     font-size: 2rem;
     transition: all .35s ease-in-out;
+    z-index: 200;
   }
 
   .dark-mode{
@@ -467,6 +492,7 @@
   .show{
     transform: translateX(0px);
     filter: brightness(30%);
+    cursor: default;
   }
 
   .iconCalc{
@@ -537,21 +563,21 @@
   
   .light{
     background-color: rgb(128, 128, 128);
-    &:hover{
+    &:active{
         background-color: rgb(158, 158, 158);
     }
   }
   
   .dark{
     background-color: rgb(47, 79, 79);
-    &:hover{
+    &:active{
         background-color: rgb(77, 109, 109);
     }
   }
   
   .orange{
     background-color: rgb(255, 165, 0);
-    &:hover{
+    &:active{
         background-color: rgb(255, 195, 30);
     }
   }
@@ -572,7 +598,7 @@
 	padding-left: 5px;
 	padding-right: 5px;
 	overflow: hidden;
-	transition: all .3s ease-in-out;
+	transition: all .2s ease-in-out;
 }
 
 .toggle-button{
@@ -584,9 +610,8 @@
 	height: 21px;
 	border-radius: 25px;
 	margin-right: 5px;
-	transition: all .3s ease-in-out;
+	transition: all .2s ease-in-out;
 	transform: translateX(-7px);
-	box-shadow: 0 0 10px rgba(0, 0, 0, .7);
   color: black;
 }
 
