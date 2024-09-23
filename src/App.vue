@@ -1,17 +1,33 @@
 <template>
-  <div>
-    <MyCalculator />
+  <div class="view" :class="{'light' : !dark }">
+    <MyCalculator @toggle-dark-mode="dark = !dark"/>
   </div>
 </template>
 
+<script>
+
+export default {
+  data(){
+    return{
+      dark: true
+    }
+  }
+}
+
+
+</script>
+
 <style scoped>
 
-div{
+.view{
   display: flex;
   height: 100vh;
   justify-content: center;
   background-color: black;
+}
 
+.light{
+  background-color: white;
 }
 
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="global">
+  <div class="global">
     
     <div class="menu" :class="visibilityMenu">
       <div class="close" @click="toggleMenu()">
@@ -375,6 +375,7 @@
       },
       toggleDarkMode(){
         this.darkMode = !this.darkMode;
+        this.$emit('toggleDarkMode');
       }
     }
   }
@@ -403,6 +404,8 @@
     height: 600px;
     padding: 10px 10px;
     background-color: rgb(47, 79, 79);
+
+    transform: translateX(0px);
     color: white;
     font-size: 1rem;
     transition: all .35s ease-in-out;
@@ -410,7 +413,7 @@
   }
 
   .hidden{
-    transform: translateX(-195px);
+    transform: translateX(-200px);
   }
 
   .close{
@@ -457,12 +460,12 @@
     font-weight: 500;
     font-style: normal;
     font-size: 1.8rem;
-    transform: translateX(-195px);
+    transform: translateX(-200px);
     transition: all .35s ease-in-out;
   }
 
   .show{
-    transform: translateX(0);
+    transform: translateX(0px);
     filter: brightness(30%);
   }
 
