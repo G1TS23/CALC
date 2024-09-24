@@ -17,7 +17,7 @@
     
     <div class="calculator" @click="toggleMenuCalc()" :class="{ 'show' : toggle, 'dark-mode' : darkMode, 'light-mode' : !darkMode }">
       <div class="toggle" @click.stop="toggleMenu()" :class="{'iconCalc' : toggle}">
-        <i class="fa-solid fa-calculator"></i>
+        <i class="fa-solid fa-list-ul"></i>
       </div>
        
       <div class="screen">
@@ -182,16 +182,26 @@
       },
       calculate(){
 
-        if(this.isPercent){
+        if(this.isPercent && !this.isPlus && !this.isDivide && !this.isMinus && !this.isMultiply){
 
-          const trueOutput = this.output.slice(0, this.output - 1);
-
-
+          //const trueOutput = this.output.slice(0, this.output - 1);
 
           const result = this.temp / 100;
           this.countDecimals(result) > 5 ? 
             this.output = result.toFixed(5).toString() : 
             this.output = result.toString();
+          
+            this.isPercent = false;
+            return;
+        }
+
+        if(this.isPercent){
+
+          const trueOutput = this.output.slice(0, this.output - 1);
+          console.log("🚀 ~ calculate ~ trueOutput:", trueOutput)
+          
+          this.output = (this.temp / 100) * parseFloat(trueOutput);
+
         }
 
         if (this.isPlus && !this.isDivide && !this.isMinus && !this.isMultiply) {
@@ -264,38 +274,16 @@
           this.isDivide = false;
           this.isCalculate = false;
           this.decimal = false;
+          this.isPercent = false;
         }
       }
 
       },
       plus(){
       
-        if((this.isDivide || this.isMultiply || this.isMinus)) {
-          this.isPlus = true;
-        } else {
-          this.temp = parseFloat(this.output);
-          this.history.push(this.temp);
-        }
-
-        this.calculate();
-
-        this.reset = true;
-        this.isPlus = true;
-        this.isMinus = false;
-        this.isMultiply = false;
-        this.isDivide = false;
-        this.decimal = false;
-        
-      },
-      minus(){
-
-        if (this.output === "0"){
-          this.output = "-";
-          this.reset = false;
-        } else {
-
-          if(this.isDivide || this.isMultiply || this.isPlus) {
-            this.isMinus = true;
+        if(this.output !== "0"){
+          if((this.isDivide || this.isMultiply || this.isMinus)) {
+            this.isPlus = true;
           } else {
             this.temp = parseFloat(this.output);
             this.history.push(this.temp);
@@ -303,68 +291,98 @@
 
           this.calculate();
 
-          
           this.reset = true;
-          this.isPlus = false;
-          this.isMinus = true;
+          this.isPlus = true;
+          this.isMinus = false;
           this.isMultiply = false;
           this.isDivide = false;
           this.decimal = false;
-
         }
+        
+      },
+      minus(){
+
+        if(this.output !== "0"){
+
+            if(this.isDivide || this.isMultiply || this.isPlus) {
+              this.isMinus = true;
+            } else {
+              this.temp = parseFloat(this.output);
+              this.history.push(this.temp);
+            }
+
+            this.calculate();
+
+            
+            this.reset = true;
+            this.isPlus = false;
+            this.isMinus = true;
+            this.isMultiply = false;
+            this.isDivide = false;
+            this.decimal = false;
+          }
       },
       multiply(){
 
-        if(this.isDivide || this.isPlus || this.isMinus) {
+        if(this.output !== "0"){
+
+          if(this.isDivide || this.isPlus || this.isMinus) {
+            this.isMultiply = true;
+          } else {
+            this.temp = parseFloat(this.output);
+            this.history.push(this.temp);
+          } 
+
+          this.calculate();
+
+          this.reset = true;
+          this.isPlus = false;
+          this.isMinus = false;
           this.isMultiply = true;
-        } else {
-          this.temp = parseFloat(this.output);
-          this.history.push(this.temp);
-        } 
-
-        this.calculate();
-
-
-        this.reset = true;
-        this.isPlus = false;
-        this.isMinus = false;
-        this.isMultiply = true;
-        this.isDivide = false;
-        this.decimal = false;
+          this.isDivide = false;
+          this.decimal = false;
+        }
 
       
       },
       divide(){
 
-        if(this.isPlus || this.isMultiply || this.isMinus) {
+        if(this.output !== "0"){
+
+          if(this.isPlus || this.isMultiply || this.isMinus) {
+            this.isDivide = true;
+            
+          } else {
+            this.temp = parseFloat(this.output);
+            this.history.push(this.temp);
+          }    
+
+          this.calculate();
+
+          this.reset = true;
+          this.isPlus = false;
+          this.isMinus = false;
+          this.isMultiply = false;
           this.isDivide = true;
-          
-        } else {
-          this.temp = parseFloat(this.output);
-          this.history.push(this.temp);
-        }    
-
-        this.calculate();
-
-        this.reset = true;
-        this.isPlus = false;
-        this.isMinus = false;
-        this.isMultiply = false;
-        this.isDivide = true;
-        this.decimal = false;
+          this.decimal = false;
+        }
 
   
       },percent(){
         this.concat("%");
 
         this.temp = parseFloat(this.output.slice(0, this.output.length - 1));
-        this.history.push(this.temp);
+        //this.history.push(this.temp);
         
         this.calculate();
         this.isPercent = true;
 
       },
       equals(){
+        if(this.isPercent){
+          this.history.push(this.temp + "%");
+          this.calculate();
+        } else {
         this.history.push(parseFloat(this.output));
         this.calculate();
         this.reset = true;
@@ -373,6 +391,7 @@
         this.isMultiply = false;
         this.isDivide = false;
         this.decimal = false;
+        }
       },
       inverse(){
         if(!this.toggle && this.output !== "0"){
@@ -580,6 +599,7 @@
     background-color: rgb(64, 224, 208);
     &:active{
         background-color: rgb(94, 254, 238);
+        color: white;
     }
   }
 
