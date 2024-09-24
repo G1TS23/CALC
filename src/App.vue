@@ -21,8 +21,8 @@ export default {
 
 .view{
   display: flex;
-  height: 100vh;
-  align-items: center;
+  /*height: 100vh;*/
+  /*align-items: center;*/
   justify-content: center;
   background-color: black;
   transition: all .35s ease-in-out;
